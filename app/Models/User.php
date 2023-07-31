@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -18,9 +19,17 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'user_name',
+        'user_type_id',
+        'first_name',
+        'last_name',
         'email',
         'password',
+        'mobile',
+        'is_active',
+        'is_delete',
+        'org_id',
+        'state_id'
     ];
 
     /**
@@ -42,4 +51,19 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function findForLogin($username)
+    {
+        return $this->where('user_name', $username)->first();
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class, 'org_id');
+    }
+
+    public function userType()
+    {
+        return $this->belongsTo(UserType::class, 'user_type_id');
+    }
 }
